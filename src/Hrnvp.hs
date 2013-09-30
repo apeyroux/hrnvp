@@ -2,7 +2,7 @@ module Hnrvp where
 
 import Data.List
 import Data.Char
-
+import Data.Int
 
 data Adresse = Adresse { l1 :: String,
                          l2 :: String } deriving (Show, Eq, Ord)
@@ -15,4 +15,9 @@ normAdr (x:xs)
 normAdr _ = []
 
 restrAdr :: String -> Adresse
-restrAdr s = (Adresse "alex" "88 rue des lapins")
+restrAdr s = (Adresse "alex" "88 rue stsi2")
+
+isDate :: String -> Maybe Bool
+isDate x | elem (read x::Integer) [1100..2050] = Just True
+	 | otherwise = Nothing
+
