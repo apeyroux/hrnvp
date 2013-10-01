@@ -1,3 +1,8 @@
+{-
+ - Pourquoi pas de doublons ?
+ - il devrait y en avoir car forcement deux noms de rue == dans niv diff
+ -}
+
 import Database.XBase.Dbf.Handle
 import Data.List
 import qualified Data.ByteString.Lazy       as BL
@@ -6,9 +11,10 @@ import qualified Data.ByteString.Char8      as BC8
 import qualified Data.ByteString.Lazy.Char8 as BLC8
 
 main = do
+    putStrLn "you can take a cofee ! ..."
     mapM dbf2ref lFiles 
     where lFiles = ["SHP/RESEAU_ROUTIER_NIV1.dbf", 
-                    "SHP/RESEAU_ROUTIER_NIV2.dbf", 
+                    "SHP/RESEAU_ROUTIER_NIV2.dbf",
                     "SHP/RESEAU_ROUTIER_NIV3.dbf", 
                     "SHP/RESEAU_ROUTIER_NIV4.dbf", 
                     "SHP/RESEAU_ROUTIER_NIV5.dbf"]
