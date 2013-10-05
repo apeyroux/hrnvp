@@ -2,6 +2,8 @@
 
 /!\ Projet just for fun du Samedi soir !
 
+TODO: passer en ByteString
+
 ##Exemple :
 
 ```
