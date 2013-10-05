@@ -4,7 +4,7 @@
 
 _TODO_: passer en ByteString
 
-##Resum
+##Abstract
 
 ```
 ((HEADER NOM|SOCIETE|CHEZ...) (NUM (RUE|VOIE|BD...)) (CP (VILLE)(PAYS)))
