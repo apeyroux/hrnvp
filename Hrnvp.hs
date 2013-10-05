@@ -12,6 +12,7 @@
  - 7. Pays (seulement pour courrier trans-frontalier)  Belgique
  -
  - je considere que le cp est le pivot de l'adresse
+ - codaz very crado mais fait en 1h pour tester les regex en haskell
  -
  -}
 
