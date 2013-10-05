@@ -11,6 +11,7 @@
  - 6. Code postal + Localité   1000 Bruxelles
  - 7. Pays (seulement pour courrier trans-frontalier)  Belgique
  -
+ - je considere que le cp est le pivot de l'adresse
  -
  -}
 
@@ -19,7 +20,8 @@ module Hnrvp where
 import Data.List
 import Data.Char
 import Data.Int
-import Data.ByteString.Lazy
+import Text.Regex as R
+import Data.Map as M
 
 data Adresse = Adresse { l1 :: String,
                          l2 :: String } deriving (Show, Eq, Ord)
@@ -31,19 +33,31 @@ normAdr (x:xs)
     where badch = "();,.*#\n\t"
 normAdr _ = []
 
-restrAdr :: String -> Adresse
-restrAdr s = (Adresse "alex" "88 rue stsi2")
 
-isDate :: String -> Maybe Bool
-isDate x | elem (read x::Integer) [1100..2050] = Just True
-	 | otherwise = Nothing
+restrAdr adr = case matchPivot adr of
+                Nothing -> "WTF ! its not adr ... :(" -- return nothing pour la prochaine fois !
+                Just (b, m, a, _) -> 
+                            case matchCity m of
+                            Nothing -> "NO CP No City !"
+                            Just c -> 
+                                -- maintenant que j'ai le cp je vais chercher la rue et le nom du gars
+                                -- il faudrait ajouter un check de "chez" pour que ce soit complet
+                                case cutAdr b of
+                                Nothing -> "I dont match street number ..."
+                                Just (b', m', a', _) ->
+                                    case matchChez b' of
+                                    Nothing -> "l1 :" ++ b' ++ "\nl5 :" ++ m' ++ a' ++ "\nl6 :" ++ m ++ " " ++ c
+                                    Just (b'', _, a'', _) -> "l1 :" ++ b'' ++ "\nl2 :" ++ a'' ++ "\nl5 :" ++ m' ++ a' ++ "\nl6 :" ++ m ++ " " ++ c
+   
+cutAdr beforeCp = matchRegexAll rNumber beforeCp 
+                where rNumber = R.mkRegex "[1-9]+( av| bis| bd| rue)"
 
-searchCity :: [ByteString] -> Maybe String
-searchCity (x:xs) | elem x citys = Just x
-                  | otherwise = searchCity xs
-                  where citys = ["meudon", "clamart", "paris"]
-searchCity [] = Nothing
+matchChez adr = matchRegexAll rChez adr
+                where rChez = R.mkRegex "Chez|chez"
+ 
+-- return un tuple (before, match, after, []) or nothing
+matchPivot adr = matchRegexAll rCp adr
+                where rCp = R.mkRegex "((0[1-9])|([1-8][0-9])|(9[0-8])|(2A)|(2B))[0-9]{3}"
 
-isCp :: String -> [Maybe String]
-isCp s = map (\(x,y)-> if x == s then Just y else Nothing) cpcity
-        where cpcity = [("92320","C345","Chatillon"),("92140","C456","Clamart"),("92190","M350","Meudon")]
+matchCity cp = M.lookup cp (M.fromList citys)
+                where citys = [("92320", "chatillon"), ("92190", "meudon")]
