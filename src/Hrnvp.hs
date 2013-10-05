@@ -15,7 +15,7 @@
  -
  -}
 
-module Hnrvp where
+module Hrnvp (restrAdr, normAdr) where
 
 import Data.List
 import Data.Char
@@ -23,6 +23,7 @@ import Data.Int
 import Text.Regex as R
 import Data.Map as M
 
+-- sert pas pour le moment
 data Adresse = Adresse { l1 :: String,
                          l2 :: String } deriving (Show, Eq, Ord)
 
@@ -33,8 +34,7 @@ normAdr (x:xs)
     where badch = "();,.*#\n\t"
 normAdr _ = []
 
-
-restrAdr adr = case matchPivot adr of
+restrAdr adr = case matchPivot (normAdr adr) of
                 Nothing -> "WTF ! its not adr ... :(" -- return nothing pour la prochaine fois !
                 Just (b, m, a, _) -> 
                             case matchCity m of
@@ -50,14 +50,15 @@ restrAdr adr = case matchPivot adr of
                                     Just (b'', _, a'', _) -> "l1 :" ++ b'' ++ "\nl2 :" ++ a'' ++ "\nl5 :" ++ m' ++ a' ++ "\nl6 :" ++ m ++ " " ++ c
    
 cutAdr beforeCp = matchRegexAll rNumber beforeCp 
-                where rNumber = R.mkRegex "[1-9]+( av| bis| bd| rue)"
+                where rNumber = R.mkRegex "[1-9]+( AV| BIS| BD| RUE)"
 
 matchChez adr = matchRegexAll rChez adr
-                where rChez = R.mkRegex "Chez|chez"
+                where rChez = R.mkRegex "CHEZ"
  
 -- return un tuple (before, match, after, []) or nothing
 matchPivot adr = matchRegexAll rCp adr
                 where rCp = R.mkRegex "((0[1-9])|([1-8][0-9])|(9[0-8])|(2A)|(2B))[0-9]{3}"
 
+-- peut ce passer du match dans la liste des villes/cp
 matchCity cp = M.lookup cp (M.fromList citys)
-                where citys = [("92320", "chatillon"), ("92190", "meudon")]
+                where citys = [("92320", "CHATILLON"), ("92190", "MEUDON")]
