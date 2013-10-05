@@ -60,6 +60,10 @@ matchChez adr = matchRegexAll rChez adr
 matchPivot adr = matchRegexAll rCp adr
                 where rCp = R.mkRegex "((0[1-9])|([1-8][0-9])|(9[0-8])|(2A)|(2B))[0-9]{3}"
 
+-- virer le a|à + nom de la ville
+processA adr = subRegex rA adr "" 
+                where rA = R.mkRegex "(A|À)*" -- faire regex a|à + nom ville + cp si ou cp + non ville
+
 -- peut ce passer du match dans la liste des villes/cp
 matchCity cp = M.lookup cp (M.fromList citys)
                 where citys = [("92320", "CHATILLON"), ("92190", "MEUDON")]
