@@ -1,10 +1,14 @@
 #Mini RNVP en Haskell
 
-/!\ Projet just for fun du Samedi soir !
+/!\ Projet just for fun du Samedi soir ! /!\
 
-TODO: passer en ByteString
+_TODO_: passer en ByteString
 
+##Resum
+
+```
 ((HEADER NOM|SOCIETE|CHEZ...) (NUM (RUE|VOIE|BD...)) (CP (VILLE)(PAYS)))
+```
 
 ##Exemple :
 
