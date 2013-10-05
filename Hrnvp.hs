@@ -36,7 +36,7 @@ normAdr (x:xs)
 normAdr _ = []
 
 restrAdr adr = case matchPivot (normAdr adr) of
-                Nothing -> "WTF ! its not adr ... :(" -- return nothing pour la prochaine fois !
+                Nothing -> "WTF ! its not adr ... :(" -- fucking crade : return nothing pour la prochaine fois !
                 Just (b, m, a, _) -> 
                             case matchCity m of
                             Nothing -> "NO CP No City !"
