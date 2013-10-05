@@ -1,6 +1,6 @@
 #Mini RNVP en Haskell
 
-/!\ Projet just for fun !
+/!\ Projet just for fun du Samedi soir !
 
 ##Exemple :
 
