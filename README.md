@@ -4,6 +4,8 @@
 
 TODO: passer en ByteString
 
+((HEADER NOM|SOCIETE|CHEZ...) (NUM (RUE|VOIE|BD...)) (CP (VILLE)(PAYS)))
+
 ##Exemple :
 
 ```
