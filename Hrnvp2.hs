@@ -46,6 +46,6 @@ matchChez :: C8.ByteString -> (C8.ByteString, C8.ByteString, C8.ByteString)
 matchChez a = a =~ rx :: (C8.ByteString, C8.ByteString, C8.ByteString)
     where rx = "CHEZ"
 
--- ajouter la sup des badchar "#:;,."
+-- TODO: ajouter la sup des badchar "#:;,."
 clearAdr :: C8.ByteString -> C8.ByteString
 clearAdr a = E.encodeUtf8 $ T.toUpper $ E.decodeUtf8 a
