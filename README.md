@@ -42,3 +42,5 @@ Ce qui [donne](https://rnvp.ifup.sh/Alex22%20rue%20des%20lapins%2075407%20Paris)
 - Utilisation de Data.Tree pour plus de fun
 - Ajout de la ligne 7
 - Notion d'entreprise/bat pour ligne 2
+- Voir si pas mieux avec un Parsec ?
+- Revoir l'algo autours du pivot qui est un peut "lourd"
