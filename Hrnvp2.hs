@@ -17,13 +17,14 @@ data Adresse = Adresse {
 restrAdr :: C8.ByteString -> Adresse
 restrAdr a = case matchPivot $ clearAdr a of
     (b, m, a) -> case matchRue b of
-        (b', m', a') -> (Adresse b' 
-                        (C8.pack "") 
-                        (C8.append m' a')
-                        (C8.pack "") 
-                        (C8.pack "") 
-                        (C8.append m a)
-                        (C8.pack ""))
+        (b', m', a') -> case matchChez b' of
+            (b'', m'', a'') -> (Adresse b'' 
+                            (C8.append m'' a'')
+                            (C8.append m' a')
+                            (C8.pack "") 
+                            (C8.pack "") 
+                            (C8.append m a)
+                            (C8.pack ""))
     
 
 {- 
