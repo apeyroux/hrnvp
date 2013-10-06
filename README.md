@@ -1,4 +1,4 @@
-#Mini RNVP en Haskell
+#Mini RNVP FR
 
 /!\ Projet just for fun du Samedi soir ! /!\
 
