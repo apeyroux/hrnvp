@@ -1,69 +1,62 @@
-{-
- -
- - https://github.com/kawu/nerf
- -
- - Eléments de l'adresse    Exemple
- - 1. Nom du destinataire  Mr Pierre Boulanger
- - 2. Fonction/Département (optionnel) Directeur, Dpt Qualité
- - 3. Organisation (si d’application)  Acme SA
- - 4. Informations de dispatch (si d’application)  Bloc A - Etage 4 - Porte 6
- - 5. Type et nom de rue + numéro + n° de boîte    Rue du Vivier 7C bte 5
- - 6. Code postal + Localité   1000 Bruxelles
- - 7. Pays (seulement pour courrier trans-frontalier)  Belgique
- -
- - je considere que le cp est le pivot de l'adresse
- - codaz very crado mais fait en 1h pour tester les regex en haskell
- -
+{-# LANGUAGE ViewPatterns #-} 
+module Hrnvp where
+
+import Text.Regex.Posix
+import qualified Data.ByteString.Char8 as C8
+import qualified Data.Text as T
+import qualified Data.Text.Encoding as E
+import qualified Data.ByteString as B
+import qualified Data.Word8 as W8
+import Data.ByteString.Internal (c2w) 
+
+data Adresse = Adresse {
+    l1::C8.ByteString,
+    l2::C8.ByteString,
+    l3::C8.ByteString,
+    l4::C8.ByteString,
+    l5::C8.ByteString,
+    l6::C8.ByteString,
+    l7::C8.ByteString } deriving (Show, Eq, Ord)
+
+restrAdr :: C8.ByteString -> Adresse
+restrAdr a = case matchPivot $ clearAdr a of
+    (b, m, a) -> case matchRue b of
+        (b', m', a') -> case matchChez b' of
+            (b'', m'', a'') -> (Adresse b'' 
+                            (C8.append m'' a'')
+                            (C8.append m' a')
+                            (C8.pack "") 
+                            (C8.pack "") 
+                            (C8.append m a)
+                            (C8.pack ""))
+    
+
+{- 
+ - Le pivot est le cp de la ville
+ - (before, cp, after)
  -}
+matchPivot :: C8.ByteString -> (C8.ByteString, C8.ByteString, C8.ByteString)
+matchPivot a = a =~ rx :: (C8.ByteString, C8.ByteString, C8.ByteString)
+    where rx = "((0[1-9])|([1-8][0-9])|(9[0-8])|(2A)|(2B))[0-9]{3}"
 
-module Hrnvp (restrAdr, normAdr) where
+{-
+ - (before == header de l'adresse, num rue, voie)
+ -}
+matchRue :: C8.ByteString -> (C8.ByteString, C8.ByteString, C8.ByteString)
+matchRue a = a =~ rx :: (C8.ByteString, C8.ByteString, C8.ByteString)
+    where rx = "[1-9]+( AV| BIS| BD| BOULVARD| RUE)"
 
-import Data.List
-import Data.Char
-import Data.Int
-import Text.Regex as R
-import Data.Map as M
+matchChez :: C8.ByteString -> (C8.ByteString, C8.ByteString, C8.ByteString)
+matchChez a = a =~ rx :: (C8.ByteString, C8.ByteString, C8.ByteString)
+    where rx = "CHEZ"
 
--- sert pas pour le moment
-data Adresse = Adresse { l1 :: String,
-                         l2 :: String } deriving (Show, Eq, Ord)
+-- TODO: ajouter la sup des badchar "#:;,."
+-- foldr (\x y -> clearBadChar (C8.pack x) (y)) (C8.pack "ale;xan,dre") [";",","]
+-- "alexandre"
+-- faire un truc plus classe avec du isPonctuation de Word8
+clearAdr :: C8.ByteString -> C8.ByteString
+clearAdr a = foldr (\x y -> clearBadChar (C8.pack x) (y)) (E.encodeUtf8 $ T.toUpper $ E.decodeUtf8 a) badCh
+    where badCh = [";", ",", "(", ")", "#", "\n", "\t", "_"]
 
-normAdr :: String -> String
-normAdr (x:xs)
-    | elem x badch = normAdr xs
-    | otherwise = toUpper x : normAdr xs
-    where badch = "();,.*#\n\t"
-normAdr _ = []
-
-restrAdr adr = case matchPivot (normAdr adr) of
-                Nothing -> "WTF ! its not adr ... :(" -- fucking crade : return nothing pour la prochaine fois !
-                Just (b, m, a, _) -> 
-                            case matchCity m of
-                            Nothing -> "NO CP No City !"
-                            Just c -> 
-                                -- maintenant que j'ai le cp je vais chercher la rue et le nom du gars
-                                -- il faudrait ajouter un check de "chez" pour que ce soit complet
-                                case cutAdr b of
-                                Nothing -> "I dont match street number ..."
-                                Just (b', m', a', _) ->
-                                    case matchChez b' of
-                                    Nothing -> "l1 :" ++ b' ++ "\nl5 :" ++ m' ++ a' ++ "\nl6 :" ++ m ++ " " ++ c
-                                    Just (b'', _, a'', _) -> "l1 :" ++ b'' ++ "\nl2 :" ++ a'' ++ "\nl5 :" ++ m' ++ a' ++ "\nl6 :" ++ m ++ " " ++ c
-   
-cutAdr beforeCp = matchRegexAll rNumber beforeCp 
-                where rNumber = R.mkRegex "[1-9]+( AV| BIS| BD| RUE)"
-
-matchChez adr = matchRegexAll rChez adr
-                where rChez = R.mkRegex "CHEZ"
- 
--- return un tuple (before, match, after, []) or nothing
-matchPivot adr = matchRegexAll rCp adr
-                where rCp = R.mkRegex "((0[1-9])|([1-8][0-9])|(9[0-8])|(2A)|(2B))[0-9]{3}"
-
--- virer le a|à + nom de la ville
-processA adr = subRegex rA adr "" 
-                where rA = R.mkRegex "(A|À)*" -- faire regex a|à + nom ville + cp si ou cp + non ville 
-
--- peut ce passer du match dans la liste des villes/cp en gardant la partie droite du result de la regex
-matchCity cp = M.lookup cp (M.fromList citys)
-                where citys = [("92320", "CHATILLON"), ("92190", "MEUDON")]
+clearBadChar :: C8.ByteString -> C8.ByteString -> C8.ByteString
+clearBadChar c s = E.encodeUtf8 $ T.replace (E.decodeUtf8 c) (T.pack "") (E.decodeUtf8 s)
