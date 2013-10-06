@@ -1,6 +1,6 @@
 import Hrnvp
-import System.IO
+import qualified Data.ByteString.Char8 as C8
 
 main = do
-    adr <- getContents
-    putStrLn $ restrAdr adr 
+    adr <- C8.getContents
+    putStrLn $ (show (restrAdr adr)::String)

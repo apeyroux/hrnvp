@@ -44,7 +44,7 @@ matchPivot a = a =~ rx :: (C8.ByteString, C8.ByteString, C8.ByteString)
  -}
 matchRue :: C8.ByteString -> (C8.ByteString, C8.ByteString, C8.ByteString)
 matchRue a = a =~ rx :: (C8.ByteString, C8.ByteString, C8.ByteString)
-    where rx = "[1-9]+( AV| BIS| BD| BOULVARD| RUE)"
+    where rx = "[1-9]+( AV| BIS| BD| BOULVARD| RUE| ROUTE)"
 
 matchChez :: C8.ByteString -> (C8.ByteString, C8.ByteString, C8.ByteString)
 matchChez a = a =~ rx :: (C8.ByteString, C8.ByteString, C8.ByteString)
