@@ -34,3 +34,4 @@ Ce qui [donne](https://rnvp.ifup.sh/Alex22%20rue%20des%20lapins%2075407%20Paris)
 ##TODO 
 
 - Passer en ByteString car là, c'est vraiment trop moche !
+- Utilisation de Data.Tree pour plus de fun
