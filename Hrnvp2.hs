@@ -1,9 +1,13 @@
+{-# LANGUAGE ViewPatterns #-} 
 module Hrnvp where
 
 import Text.Regex.Posix
 import qualified Data.ByteString.Char8 as C8
 import qualified Data.Text as T
 import qualified Data.Text.Encoding as E
+import qualified Data.ByteString as B
+import qualified Data.Word8 as W8
+import Data.ByteString.Internal (c2w) 
 
 data Adresse = Adresse {
     l1::C8.ByteString,
@@ -47,5 +51,12 @@ matchChez a = a =~ rx :: (C8.ByteString, C8.ByteString, C8.ByteString)
     where rx = "CHEZ"
 
 -- TODO: ajouter la sup des badchar "#:;,."
+-- foldr (\x y -> clearBadChar (C8.pack x) (y)) (C8.pack "ale;xan,dre") [";",","]
+-- "alexandre"
+-- faire un truc plus classe avec du isPonctuation de Word8
 clearAdr :: C8.ByteString -> C8.ByteString
-clearAdr a = E.encodeUtf8 $ T.toUpper $ E.decodeUtf8 a
+clearAdr a = foldr (\x y -> clearBadChar (C8.pack x) (y)) (E.encodeUtf8 $ T.toUpper $ E.decodeUtf8 a) badCh
+    where badCh = [";", ",", "(", ")", "#", "\n", "\t", "_"]
+
+clearBadChar :: C8.ByteString -> C8.ByteString -> C8.ByteString
+clearBadChar c s = E.encodeUtf8 $ T.replace (E.decodeUtf8 c) (T.pack "") (E.decodeUtf8 s)
