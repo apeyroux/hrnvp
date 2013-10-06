@@ -2,8 +2,6 @@
 
 /!\ Projet just for fun du Samedi soir ! /!\
 
-_TODO_: passer en ByteString
-
 ##Abstract
 
 ```
@@ -30,3 +28,7 @@ l6 :92320 CHATILLON
 ```
 https://rnvp.ifup.sh/Alex22%20rue%20des%20lapins%2075407%20Paris
 ```
+
+##TODO 
+
+- Passer en ByteString car là, c'est vraiment trop moche !
