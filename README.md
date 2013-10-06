@@ -11,6 +11,11 @@
 ##Exemple :
 
 ```
+*Hrnvp T> restrAdr  $ C8.pack "alex,andre lambda; chez angel 8, rue des lapins 92320 chatillin"
+Adresse {l1 = "ALEXANDRE LAMBDA ", l2 = "CHEZ ANGEL ", l3 = "8 RUE DES LAPINS ", l4 = "", l5 = "", l6 = "92320 CHATILLIN", l7 = ""}
+```
+
+```
 echo "Jean-Alexandre Dupond chez angel 88 rue des lapins 92320 chatillon" | ./myrnvp 
 l1 :JEAN-ALEXANDRE DUPOND 
 l2 : ANGEL 
