@@ -6,8 +6,6 @@ import qualified Data.ByteString.Char8 as C8
 import qualified Data.Text as T
 import qualified Data.Text.Encoding as E
 import qualified Data.ByteString as B
-import qualified Data.Word8 as W8
-import Data.ByteString.Internal (c2w) 
 
 data Adresse = Adresse {
     l1::C8.ByteString,
